@@ -205,7 +205,7 @@ namespace SmartStage
 
 			if (exhaustDamagesAPart(availableNodes))
 				return false;
-
+            
 			return part.attachNodes.All(x => (x.id != "bottom" || x.attachedPart == null || !availableNodes.ContainsKey(x.attachedPart)));
 		}
 
