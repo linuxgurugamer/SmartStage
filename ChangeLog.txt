@@ -1,0 +1,16 @@
+2.9.10
+	Updated for 1.4.1
+	Added support for ClickThroughBlocker
+	Added support for ToolbarController
+	Changed ShowStage button to toggle showStage window
+	Added toggle for Blizzy toolbar button
+
+2.9.9
+	1.3.1 Update
+
+2.9.8
+	Initial LGG release
+	No functionality changes
+	Added version info to dll
+	Added Visual Studio files
+	Added build batch files

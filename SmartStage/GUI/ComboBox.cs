@@ -1,6 +1,8 @@
 ﻿using System;
 using UnityEngine;
 
+using ClickThroughFix;
+
 namespace SmartStage
 {
 	public class ComboBox
@@ -47,7 +49,7 @@ namespace SmartStage
 			rect.x = Math.Max(0, Math.Min(rect.x, Screen.width / scale - rect.width));
 			rect.y = Math.Max(0, Math.Min(rect.y, Screen.height / scale - rect.height));
 
-			rect = GUILayout.Window(id, rect, identifier =>
+			rect = ClickThruBlocker.GUILayoutWindow(id, rect, identifier =>
 				{
 					selectedItem = GUILayout.SelectionGrid(-1, entries, 1, style);
 					if (GUI.changed)

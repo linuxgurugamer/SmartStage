@@ -1,20 +1,14 @@
 using System;
 using UnityEngine;
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using UnityEngine;
-using System.Reflection;
+using ClickThroughFix;
 
 namespace SmartStage
 {
 
     public class MainWindow
     {
-        int windowId = GUIUtility.GetControlID(FocusType.Native);
+        int windowId = GUIUtility.GetControlID(FocusType.Passive);
         Rect windowPosition, stagePosition, displayStagePosition;
         bool lockEditor;
         public bool ShowWindow = false;
@@ -63,7 +57,7 @@ namespace SmartStage
                     windowPosition.x = Math.Min(windowPosition.x, Screen.width - windowPosition.width - 50);
                     windowPosition.y = Math.Min(windowPosition.y, Screen.height - windowPosition.height - 50);
                 }
-                windowPosition = GUILayout.Window(windowId, windowPosition, drawWindow, "SmartStage");
+                windowPosition = ClickThruBlocker.GUILayoutWindow(windowId, windowPosition, drawWindow, "SmartStage");
                 lockEditor |= windowPosition.Contains(Event.current.mousePosition);
             }
 
@@ -74,7 +68,7 @@ namespace SmartStage
                     stagePosition.x = Math.Min(stagePosition.x, Screen.width - stagePosition.width - 50);
                     stagePosition.y = Math.Min(stagePosition.y, Screen.height - stagePosition.height - 50);
                 }
-                stagePosition = GUILayout.Window(windowId + 1, stagePosition, drawStagesWindow, "SmartStage Stages");
+                stagePosition = ClickThruBlocker.GUILayoutWindow(windowId + 1, stagePosition, drawStagesWindow, "SmartStage Stages");
                 lockEditor |= stagePosition.Contains(Event.current.mousePosition);
             }
 
@@ -85,7 +79,7 @@ namespace SmartStage
                     displayStagePosition.x = Math.Min(displayStagePosition.x, Screen.width - stagePosition.width - 50);
                      displayStagePosition.y = Math.Min(displayStagePosition.y, Screen.height - stagePosition.height - 50);
                 }
-                 displayStagePosition = GUILayout.Window(windowId + 2, displayStagePosition, drawSingleStageWindow, "SmartStage Stages");
+                 displayStagePosition = ClickThruBlocker.GUILayoutWindow(windowId + 2, displayStagePosition, drawSingleStageWindow, "SmartStage Stages");
                 lockEditor |= stagePosition.Contains(Event.current.mousePosition);
             }
 
@@ -153,10 +147,13 @@ namespace SmartStage
             GUILayout.BeginVertical();
             if (GUILayout.Button("Compute stages"))
                 ComputeStages();
+            if (KSP.UI.Screens.StageManager.Instance.Stages.Count <= 1)
+                GUI.enabled = false;
             if (GUILayout.Button("Show stages"))
             {
-                showStages = true;
+                showStages = !showStages;
             }
+            GUI.enabled = true;
             plugin.autoUpdateStaging = GUILayout.Toggle(plugin.autoUpdateStaging, "Automatically recompute staging");
 
             bool newAdvancedSimulation = GUILayout.Toggle(advancedSimulation, "Advanced simulation");
@@ -183,6 +180,8 @@ namespace SmartStage
                     ComputeStages();
             }
             plugin.showInFlight = GUILayout.Toggle(plugin.showInFlight, "Show icon in flight");
+            plugin.useBlizzy = GUILayout.Toggle(plugin.useBlizzy, "Use Blizzy toolbar, if available");
+
             GUILayout.EndVertical();
             if (draggable)
                 GUI.DragWindow();
