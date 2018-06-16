@@ -7,6 +7,16 @@ using ToolbarControl_NS;
 namespace SmartStage
 {
     [KSPAddon(KSPAddon.Startup.MainMenu, true)]
+    public class RegisterToolbar : MonoBehaviour
+    {
+        void Start()
+        {
+            ToolbarControl.RegisterMod(Plugin.VAB_MODID, Plugin.MODNAME);
+
+            //ToolbarControl.RegisterMod(Plugin.FLIGHT_MODID, Plugin.MODNAME + " Flight");
+        }
+    }
+    [KSPAddon(KSPAddon.Startup.MainMenu, true)]
     public class Plugin : MonoBehaviour
     {
         public enum state { inactive, active }
@@ -14,7 +24,7 @@ namespace SmartStage
         //ApplicationLauncherButton vabButton;
         //ApplicationLauncherButton flightButton;
 
-        ToolbarControl vabToolbarControl, flightToolbarControl;
+        ToolbarControl vabToolbarControl; //, flightToolbarControl;
 
         readonly Texture2D[] textures;
 
@@ -35,7 +45,7 @@ namespace SmartStage
 
                 string smallIcon = _state == 0 ? "SmartStage/SmartStage24" : "SmartStage/SmartStage24-active";
                 vabToolbarControl?.SetTexture(bigIcon, smallIcon);
-                flightToolbarControl?.SetTexture(bigIcon, smallIcon);
+                //flightToolbarControl?.SetTexture(bigIcon, smallIcon);
 
             }
         }
@@ -54,7 +64,6 @@ namespace SmartStage
             }
         }
 
-        public bool useBlizzy = false;
         bool _autoUpdateStaging = false;
         public bool autoUpdateStaging
         {
@@ -87,7 +96,6 @@ namespace SmartStage
                 {
                     var settings = ConfigNode.Load(KSP.IO.IOUtils.GetFilePathFor(typeof(MainWindow), "settings.cfg"));
                     autoUpdateStaging = settings.GetValue("autoUpdateStaging") == bool.TrueString;
-                    useBlizzy = settings.GetValue("useBlizzy") == bool.TrueString;
                 }
                 catch (Exception) { }
                 try
@@ -97,7 +105,7 @@ namespace SmartStage
                 }
                 catch (Exception) { }
             }
-            GameEvents.onGUIApplicationLauncherReady.Add(AddButton);
+            //GameEvents.onGUIApplicationLauncherReady.Add(AddButton);
             GameEvents.onGUIApplicationLauncherDestroyed.Add(RemoveButton);
             GameEvents.onEditorShipModified.Add(onEditorShipModified);
             GameEvents.onLevelWasLoaded.Add(sceneChanged);
@@ -124,89 +132,83 @@ namespace SmartStage
             }
         }
 
+        internal const string VAB_MODID = "VABSmartStage_NS";
+        //internal const string FLIGHT_MODID = "SPHSmartStage_NS";
+        internal const string MODNAME = "Smart Stage";
+
         void AddButton()
         {
             if (vabToolbarControl != null) // || ! ApplicationLauncher.Ready)
                 return;
-#if false
-            vabButton = ApplicationLauncher.Instance.AddModApplication(
-				() => ShowWindow(true),
-				() => ShowWindow(false),
-				null, null,
-				null, null,
-				ApplicationLauncher.AppScenes.VAB | ApplicationLauncher.AppScenes.SPH,
-				Texture);
-#endif
+
+            ApplicationLauncher.AppScenes scenes = ApplicationLauncher.AppScenes.VAB | ApplicationLauncher.AppScenes.SPH;
+            if (showInFlight)
+                scenes |= ApplicationLauncher.AppScenes.FLIGHT;
+
             vabToolbarControl = gameObject.AddComponent<ToolbarControl>();
             vabToolbarControl.AddToAllToolbars(ShowWindowTrue, ShowWindowFalse,
-                ApplicationLauncher.AppScenes.VAB | ApplicationLauncher.AppScenes.SPH,
-                "SmartStage_NS",
+                scenes,
+                VAB_MODID,
                 "vabSmartStageButton",
                 "SmartStage/SmartStage38-active",
                 "SmartStage/SmartStage38",
                 "SmartStage/SmartStage24-active",
                 "SmartStage/SmartStage24",
-                "Smart Stage"
+                MODNAME
             );
-            vabToolbarControl.UseBlizzy(useBlizzy);
 
-
+#if false
             if (showInFlight)
             {
-#if false
-                flightButton = ApplicationLauncher.Instance.AddModApplication(
-					SimulationLogic.inFlightComputeStages, SimulationLogic.inFlightComputeStages,
-					null, null,
-					null, null,
-					ApplicationLauncher.AppScenes.FLIGHT,
-					Texture);
-#endif
                 flightToolbarControl = gameObject.AddComponent<ToolbarControl>();
                 flightToolbarControl.AddToAllToolbars(SimulationLogic.inFlightComputeStages, SimulationLogic.inFlightComputeStages,
                     ApplicationLauncher.AppScenes.FLIGHT,
-                    "SmartStage_NS",
+                    FLIGHT_MODID,
                     "flightSmartStageButton",
                     "SmartStage/SmartStage38-active",
                     "SmartStage/SmartStage38",
                     "SmartStage/SmartStage24-active",
                     "SmartStage/SmartStage24",
-                    "Smart Stage"
+                    MODNAME + " Flight"
                 );
-                flightToolbarControl.UseBlizzy(useBlizzy);
             }
+#endif
         }
 
         void RemoveButton()
         {
-#if false
-            if (flightButton != null)
-				ApplicationLauncher.Instance.RemoveModApplication(flightButton);
-			flightButton = null;
-			if (vabButton != null)
-				ApplicationLauncher.Instance.RemoveModApplication(vabButton);
-			vabButton = null;
-#endif
             if (vabToolbarControl != null)
             {
                 vabToolbarControl.OnDestroy();
                 Destroy(vabToolbarControl);
             }
+#if false
             if (flightToolbarControl != null)
             {
                 flightToolbarControl.OnDestroy();
                 Destroy(vabToolbarControl);
             }
-
+#endif
         }
         void ShowWindowTrue()
         {
-            if (gui != null)
-                gui.ShowWindow = true;
+            if (HighLogic.LoadedSceneIsFlight)
+                SimulationLogic.inFlightComputeStages();
+            else
+            {
+                if (gui != null)
+                    gui.ShowWindow = true;
+            }
         }
         void ShowWindowFalse()
         {
-            if (gui != null)
-                gui.ShowWindow = false;
+            if (HighLogic.LoadedSceneIsFlight)
+                SimulationLogic.inFlightComputeStages();
+            else
+            {
+                if (gui != null)
+                    gui.ShowWindow = false;
+            }
         }
         void ShowWindow(bool shown)
         {
@@ -216,10 +218,6 @@ namespace SmartStage
 
         public void OnGUI()
         {
-            if (vabToolbarControl != null)
-                vabToolbarControl.UseBlizzy(useBlizzy);
-            if (flightToolbarControl != null)
-                flightToolbarControl.UseBlizzy(useBlizzy);
             gui?.OnGUI();
         }
 
@@ -233,7 +231,6 @@ namespace SmartStage
             ConfigNode settings = new ConfigNode("SmartStage");
             settings.AddValue("autoUpdateStaging", autoUpdateStaging);
             settings.AddValue("showInFlight", showInFlight);
-            settings.AddValue("useBlizzy", useBlizzy);
             settings.Save(KSP.IO.IOUtils.GetFilePathFor(typeof(MainWindow), "settings.cfg"));
         }
     }

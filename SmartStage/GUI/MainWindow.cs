@@ -180,7 +180,6 @@ namespace SmartStage
                     ComputeStages();
             }
             plugin.showInFlight = GUILayout.Toggle(plugin.showInFlight, "Show icon in flight");
-            plugin.useBlizzy = GUILayout.Toggle(plugin.useBlizzy, "Use Blizzy toolbar, if available");
 
             GUILayout.EndVertical();
             if (draggable)

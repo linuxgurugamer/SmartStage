@@ -1,9 +1,16 @@
+2.9.11
+	Updated for current version of ToolbarController
+	Combined flight and editor buttons into a single button
+	Removed Blizzy options
+	Added dependency checking
+
 2.9.10
 	Updated for 1.4.1
 	Added support for ClickThroughBlocker
 	Added support for ToolbarController
 	Changed ShowStage button to toggle showStage window
 	Added toggle for Blizzy toolbar button
+	Added Jenkins config
 
 2.9.9
 	1.3.1 Update
