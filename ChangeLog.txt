@@ -1,3 +1,6 @@
+2.9.11.1
+	Version bump for 1.5 rebuild
+
 2.9.11
 	Updated for current version of ToolbarController
 	Combined flight and editor buttons into a single button
