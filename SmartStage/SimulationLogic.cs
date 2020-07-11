@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Resources;
 using UnityEngine;
+
+using static SmartStage.Plugin;
 
 namespace SmartStage
 {
@@ -208,29 +211,34 @@ namespace SmartStage
 			stages = newStages;
 
 			// Put all remaining items (parachutes?) in a separate 0 stage
-			foreach(var stage in stages)
+			foreach (var stage in stages)
 			{
 				foreach (var part in stage.stageParts)
 					state.availableNodes.Remove(part);
 			}
+
 			var stage0 = new StageDescription(elapsedTime);
 			stage0.stageParts = state.availableNodes.Keys.Where(p => p.hasStagingIcon).ToList();
 			if (stage0.stageParts.Count != 0)
 				stages.Add(stage0);
 
 			stages.Reverse();
+
 			// This is ugly, but on KSP 1.1 I have not found anything better
 			// We call this private method for each part from the root, twice and it works...
 			var SortIcons = typeof(KSP.UI.Screens.StageManager).GetMethod("SortIcons",
 				System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance, null,
-				new Type[]{typeof(bool), typeof(Part), typeof(bool)}, null);
-			var root = stages[0].stageParts[0];
+				new Type[]{typeof(bool), typeof(Part), typeof(bool), typeof(bool)}, null);
+
+            var root = stages[0].stageParts[0];
 			while (root.parent != null) root = root.parent;
-			setStages(root, SortIcons);
-			setStages(root, SortIcons);
 
 
-			#if DEBUG
+			setStages(root, SortIcons);
+//            setStages(root, SortIcons);
+
+
+#if DEBUG
 			var compTime = DateTime.Now - startTime;
 			Debug.Log("Staging computed in " + compTime.TotalMilliseconds + "ms");
 			if (samples.Count() > 0)
@@ -242,7 +250,7 @@ namespace SmartStage
 				}
 				Debug.Log(result);
 			}
-			#endif
+#endif
 		}
 
 		private void setStages(Part part, System.Reflection.MethodInfo SortIcons)
@@ -253,16 +261,17 @@ namespace SmartStage
 				var stage = stages[i];
 				foreach (var p in stage.stageParts)
 				{
-					p.inverseStage = i;
+						p.inverseStage = i;
 				}
 			}
+
 			if (part.stackIcon != null && part.stackIcon.StageIcon != null)
 			{
 				stageManager.HoldIcon(part.stackIcon.StageIcon);
-				SortIcons.Invoke(stageManager, new object[]{true, part, false});
+				SortIcons.Invoke(stageManager, new object[]{true, part, false, false});
 			}
-			foreach (var child in part.children)
-				setStages(child, SortIcons);
+            foreach (var child in part.children)
+                setStages(child, SortIcons);
 		}
 
 		public static void inFlightComputeStages()

@@ -1,5 +1,13 @@
 ChangeLog
 
+2.9.13
+	Removed unnecessary loop looking for root part
+	Removed deprecated Reflection looking for stageManager.SortIcons, it's now public
+	Added new dependency:  SpaceTuxLibrary
+	Cleaned up some unnecessary code
+	Moved RegisterToolbar into new file
+	Fixed NullRef on KSP 1.10 because SortIcons had a new parameter, had to update Reflection call
+
 2.9.12
 	Added InstallChecker
 	Updated AssemblyVersion

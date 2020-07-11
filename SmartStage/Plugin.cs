@@ -6,19 +6,13 @@ using ToolbarControl_NS;
 
 namespace SmartStage
 {
-    [KSPAddon(KSPAddon.Startup.MainMenu, true)]
-    public class RegisterToolbar : MonoBehaviour
-    {
-        void Start()
-        {
-            ToolbarControl.RegisterMod(Plugin.VAB_MODID, Plugin.MODNAME);
 
-            //ToolbarControl.RegisterMod(Plugin.FLIGHT_MODID, Plugin.MODNAME + " Flight");
-        }
-    }
     [KSPAddon(KSPAddon.Startup.MainMenu, true)]
     public class Plugin : MonoBehaviour
     {
+#if false
+        public static KSP_Log.Log Log;
+#endif
         public enum state { inactive, active }
 
         //ApplicationLauncherButton vabButton;
@@ -26,8 +20,9 @@ namespace SmartStage
 
         ToolbarControl vabToolbarControl; //, flightToolbarControl;
 
+#if false
         readonly Texture2D[] textures;
-
+#endif
         state _state = state.inactive;
         public state State
         {
@@ -49,8 +44,9 @@ namespace SmartStage
 
             }
         }
+#if false
         Texture2D Texture { get { return textures[(int)_state]; } }
-
+#endif
         bool _showInFlight = false;
         public bool showInFlight
         {
@@ -80,6 +76,7 @@ namespace SmartStage
 
         MainWindow gui;
 
+#if false
         public Plugin()
         {
             textures = new Texture2D[]{
@@ -87,6 +84,7 @@ namespace SmartStage
                 GameDatabase.Instance.GetTexture("SmartStage/SmartStage38-active", false)
             };
         }
+#endif
 
         public void Start()
         {

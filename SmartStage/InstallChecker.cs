@@ -89,7 +89,7 @@ namespace SmartStage
             }
             catch (Exception ex)
             {
-                Debug.LogError("[PlaneraryDiversity] -ERROR- " + this.GetType().FullName + "[" + this.GetInstanceID().ToString("X") + "][" + Time.time.ToString("0.00") + "]: " +
+                Debug.LogError("[SmartStage] -ERROR- " + this.GetType().FullName + "[" + this.GetInstanceID().ToString("X") + "][" + Time.time.ToString("0.00") + "]: " +
                    "Exception caught while cleaning up old files.\n" + ex.Message + "\n" + ex.StackTrace);
 
             }
