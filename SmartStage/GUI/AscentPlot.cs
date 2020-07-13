@@ -226,7 +226,7 @@ namespace SmartStage
 				else
 					GUILayout.Label("");
 			}
-			if (hoveredPoint != null)
+			if (hoveredPoint != null && Event.current.type == EventType.Layout)
 			{
 				GUILayout.Label("time");
 				GUILayout.Label(Math.Round(timeScale.fromPlot(hoveredPoint.Value)).ToString() + "s");
@@ -234,7 +234,7 @@ namespace SmartStage
 
 			GUILayout.EndVertical();
 			GUILayout.EndHorizontal();
-			if (GUI.changed)
+			if (GUI.changed )
 				drawTexture();
 
 			return hoveredPoint == null;

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+using static SmartStage.Plugin;
+
 namespace SmartStage
 {
 	public class SmartDragCubeList
@@ -53,6 +55,7 @@ namespace SmartStage
 		public static T GetPrivate<T>(String field, object obj)
 		{
 			var f = obj.GetType().GetField(field, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
 			return (T) f.GetValue(obj);
 		}
 
@@ -95,7 +98,8 @@ namespace SmartStage
 		public DragCubeList.CubeData AddSurfaceDragDirection(Vector3 direction, float machNumber)
 		{
 			part.DragCubes.SetDrag(direction, machNumber);
-			var liftCurves = GetPrivate<PhysicsGlobals.LiftingSurfaceCurve>("liftCurves", part.DragCubes);
+			//var liftCurves = GetPrivate<PhysicsGlobals.LiftingSurfaceCurve>("liftCurves", part.DragCubes);
+			var liftCurves = part.DragCubes.BodyLiftCurve;
 			float num = 0;
 			DragCubeList.CubeData result = default(DragCubeList.CubeData);
 			result.dragVector = direction;

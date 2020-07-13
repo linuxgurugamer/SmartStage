@@ -1,7 +1,8 @@
 using System;
 using UnityEngine;
-
 using ClickThroughFix;
+
+using static SmartStage.Plugin;
 
 namespace SmartStage
 {
@@ -169,7 +170,7 @@ namespace SmartStage
                 planetId = ComboBox.Box(planetId, planets, planets);
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Max acceleration: ");
+                GUILayout.Label("Limit max acceleration to (m/sec): ");
                 maxAcceleration.text = GUILayout.TextField(maxAcceleration.text);
                 GUILayout.EndHorizontal();
 

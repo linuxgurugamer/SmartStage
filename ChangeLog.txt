@@ -1,5 +1,12 @@
 ChangeLog
 
+2.9.14 
+	Updated reflection calls to be correct for either KSP 1.9 or 1.10, a new parameter was added to 1.10
+
+	Fixed error in AddSurfaceDragDirection, used when doing advanced calculation.  Replaced old GetPrivate ("liftCurves")
+		with direct assignment
+	Fixed error ": Getting control 8's position in a group with only 8 controls when doing repaint" when displaying the graph
+
 2.9.13
 	Removed unnecessary loop looking for root part
 	Removed deprecated Reflection looking for stageManager.SortIcons, it's now public

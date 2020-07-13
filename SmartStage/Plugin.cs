@@ -10,19 +10,12 @@ namespace SmartStage
     [KSPAddon(KSPAddon.Startup.MainMenu, true)]
     public class Plugin : MonoBehaviour
     {
-#if false
         public static KSP_Log.Log Log;
-#endif
         public enum state { inactive, active }
 
-        //ApplicationLauncherButton vabButton;
-        //ApplicationLauncherButton flightButton;
 
-        ToolbarControl vabToolbarControl; //, flightToolbarControl;
+        ToolbarControl toolbarControl; //, flightToolbarControl;
 
-#if false
-        readonly Texture2D[] textures;
-#endif
         state _state = state.inactive;
         public state State
         {
@@ -32,21 +25,15 @@ namespace SmartStage
                 if (value == _state)
                     return;
                 _state = value;
-#if false
-                vabButton?.SetTexture(Texture);
-				flightButton?.SetTexture(Texture);
-#endif
                 string bigIcon = _state == 0 ? "SmartStage/SmartStage38" : "SmartStage/SmartStage38-active";
 
                 string smallIcon = _state == 0 ? "SmartStage/SmartStage24" : "SmartStage/SmartStage24-active";
-                vabToolbarControl?.SetTexture(bigIcon, smallIcon);
+                toolbarControl?.SetTexture(bigIcon, smallIcon);
                 //flightToolbarControl?.SetTexture(bigIcon, smallIcon);
 
             }
         }
-#if false
-        Texture2D Texture { get { return textures[(int)_state]; } }
-#endif
+
         bool _showInFlight = false;
         public bool showInFlight
         {
@@ -76,15 +63,6 @@ namespace SmartStage
 
         MainWindow gui;
 
-#if false
-        public Plugin()
-        {
-            textures = new Texture2D[]{
-                GameDatabase.Instance.GetTexture("SmartStage/SmartStage38", false),
-                GameDatabase.Instance.GetTexture("SmartStage/SmartStage38-active", false)
-            };
-        }
-#endif
 
         public void Start()
         {
@@ -136,15 +114,15 @@ namespace SmartStage
 
         void AddButton()
         {
-            if (vabToolbarControl != null) // || ! ApplicationLauncher.Ready)
+            if (toolbarControl != null) // || ! ApplicationLauncher.Ready)
                 return;
 
             ApplicationLauncher.AppScenes scenes = ApplicationLauncher.AppScenes.VAB | ApplicationLauncher.AppScenes.SPH;
             if (showInFlight)
                 scenes |= ApplicationLauncher.AppScenes.FLIGHT;
 
-            vabToolbarControl = gameObject.AddComponent<ToolbarControl>();
-            vabToolbarControl.AddToAllToolbars(ShowWindowTrue, ShowWindowFalse,
+            toolbarControl = gameObject.AddComponent<ToolbarControl>();
+            toolbarControl.AddToAllToolbars(ShowWindowTrue, ShowWindowFalse,
                 scenes,
                 VAB_MODID,
                 "vabSmartStageButton",
@@ -155,38 +133,15 @@ namespace SmartStage
                 MODNAME
             );
 
-#if false
-            if (showInFlight)
-            {
-                flightToolbarControl = gameObject.AddComponent<ToolbarControl>();
-                flightToolbarControl.AddToAllToolbars(SimulationLogic.inFlightComputeStages, SimulationLogic.inFlightComputeStages,
-                    ApplicationLauncher.AppScenes.FLIGHT,
-                    FLIGHT_MODID,
-                    "flightSmartStageButton",
-                    "SmartStage/SmartStage38-active",
-                    "SmartStage/SmartStage38",
-                    "SmartStage/SmartStage24-active",
-                    "SmartStage/SmartStage24",
-                    MODNAME + " Flight"
-                );
-            }
-#endif
         }
 
         void RemoveButton()
         {
-            if (vabToolbarControl != null)
+            if (toolbarControl != null)
             {
-                vabToolbarControl.OnDestroy();
-                Destroy(vabToolbarControl);
+                toolbarControl.OnDestroy();
+                Destroy(toolbarControl);
             }
-#if false
-            if (flightToolbarControl != null)
-            {
-                flightToolbarControl.OnDestroy();
-                Destroy(vabToolbarControl);
-            }
-#endif
         }
         void ShowWindowTrue()
         {

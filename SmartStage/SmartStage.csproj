@@ -72,6 +72,9 @@
     <Reference Include="$(KSPDIR_1100)\KSP_x64_Data\Managed\UnityEngine*.dll">
       <Private>False</Private>
     </Reference>
+    <Reference Include="KSP_Log">
+      <HintPath>R:\KSP_1.9.1_dev\GameData\SpaceTuxLibrary\Plugins\KSP_Log.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="ClickThroughBlocker, Version=0.1.7.3, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
